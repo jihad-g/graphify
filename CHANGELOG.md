@@ -2,6 +2,13 @@
 
 Full release notes with details on each version: [GitHub Releases](https://github.com/Graphify-Labs/graphify/releases)
 
+## Unreleased (fork: jihad-g/graphify, branch `gdscript`)
+
+- Feat: **gdscript** Godot GDScript support via `tree-sitter-gdscript`. `.gd` files emit their `class_name` class, inner classes, functions, signals and enums (with `case_of` members); a new cross-file resolver reads `project.godot` autoloads and every `class_name` and links `extends` (`inherits`), `preload`/`load` (`imports`), `Autoload.f()` / `Class.f()` / `super.f()` / inherited `f()` / typed-variable `x.f()` (`calls`), `X.new()` (`instantiates`), signal-bus `Bus.sig.emit()` (`emits`) and `Bus.sig.connect(handler)` (`listened_by`, to the handler), plus type annotations and `is`/`as` (`references`). Duck-typed `obj.f()` binds INFERRED only when `f` has a single definition and is not a Godot engine method name (`graphify/extractors/_godot_api.py`, generated from godot-cpp's extension_api dumps by `tools/gen_godot_api.py`), so `arr.is_empty()` never lands on a user `is_empty()`.
+- Feat: **gdscript** `.tscn` scenes become nodes with their root node, linked to their scripts (`uses`) and instanced sub-scenes (`instantiates`); autoload scripts carry an `autoload` attribute.
+- Fix: **detect** Godot editor sidecars (`*.import`, `*.uid`) are skipped instead of listed as unclassified, so a Godot project no longer reports most of its files as unsupported.
+- Fix: **watch/cli** `_gd_qual` is kept on unchanged context nodes so `graphify update` still links an edited script to unchanged ones.
+
 ## 0.9.104 (2026-11-07)
 
 - Security: **skill** the `/graphify` runbook no longer substitutes the scan path into Python code. Every generated code block (detect, AST and semantic extraction, build, diagnose, label, manifest, and `--update`) now reads the resolved scan root from the trusted `graphify-out/.graphify_root` sidecar that Step 1 writes through a quoted heredoc, instead of pasting the agent-supplied path into a string literal. A directory whose name carried a quote or `$(...)` could previously break out of `Path('INPUT_PATH')` and run as code; it is now read as inert data. Covers the assembled hosts and the Aider/Devin monoliths (#4762, thanks @danikdanik).

@@ -38,6 +38,7 @@ from graphify.extractors.terraform import extract_terraform
 from graphify.extractors.verilog import extract_verilog
 from graphify.extractors.vbnet import extract_vbnet
 from graphify.extractors.zig import extract_zig
+from graphify.extractors.gdscript import extract_gdscript, extract_godot_scene
 
 LANGUAGE_EXTRACTORS: dict[str, Callable[[Path], dict]] = {
     "apex": extract_apex,
@@ -54,6 +55,8 @@ LANGUAGE_EXTRACTORS: dict[str, Callable[[Path], dict]] = {
     "elixir": extract_elixir,
     "erlang": extract_erlang,
     "fortran": extract_fortran,
+    "gdscript": extract_gdscript,
+    "godot_scene": extract_godot_scene,
     "go": extract_go,
     "json": extract_json,
     "julia": extract_julia,

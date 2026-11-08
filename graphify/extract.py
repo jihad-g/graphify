@@ -93,6 +93,7 @@ from graphify.extractors.terraform import extract_terraform, prepare_terraform, 
 from graphify.extractors.verilog import extract_verilog  # noqa: F401
 from graphify.extractors.vbnet import extract_vbnet, resolve_vbnet_partial_calls  # noqa: F401
 from graphify.extractors.zig import extract_zig  # noqa: F401
+from graphify.extractors.gdscript import extract_gdscript, extract_godot_scene, resolve_gdscript  # noqa: F401
 from graphify.security import sanitize_metadata
 from graphify.paths import disambiguate_ambiguous_candidates
 
@@ -4301,6 +4302,7 @@ _LANG_FAMILY_BY_EXT: dict[str, str] = {
     ".cs": "dotnet", ".vb": "dotnet", ".razor": "dotnet", ".cshtml": "dotnet", ".xaml": "dotnet",
     ".lua": "lua", ".luau": "lua",
     ".zig": "zig",
+    ".gd": "gdscript", ".tscn": "gdscript",
     ".ex": "elixir", ".exs": "elixir",
     ".jl": "julia",
     ".dart": "dart",
@@ -8747,6 +8749,9 @@ register_language_resolver(
     LanguageResolver("java_member_calls", frozenset({".java"}), _resolve_java_member_calls)
 )
 register_language_resolver(
+    LanguageResolver("gdscript", frozenset({".gd", ".tscn"}), resolve_gdscript)
+)
+register_language_resolver(
     LanguageResolver("php_member_calls", frozenset({".php"}), _resolve_php_member_calls)
 )
 register_language_resolver(
@@ -9939,6 +9944,8 @@ _DISPATCH: dict[str, Any] = {
     ".luau": extract_lua,
     ".toc": extract_lua,
     ".zig": extract_zig,
+    ".gd": extract_gdscript,
+    ".tscn": extract_godot_scene,
     ".ps1": extract_powershell,
     ".psm1": extract_powershell,
     ".psd1": extract_powershell_manifest,
